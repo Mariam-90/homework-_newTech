@@ -25,13 +25,11 @@ jobs:
     
       - name: Install dependencies
         run: |
-            cd lab3
             pip install -r requirements.txt
      
       - name: Run test_validator
         
         run: |
          pwd
-         cd lab3
          pytest test_validator.py -v
 
