@@ -12,13 +12,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    
+
     runs-on: ${{ matrix.os }}
 
     defaults:
       run:
         working-directory: ./lab3
-    
 
     steps:
       - name: Checkout code
@@ -30,17 +29,28 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-cov
 
-      - name: Run validator tests
-        run: pytest test_validator.py -v
+      - name: Run validator tests with coverage
+        run: pytest test_validator.py -v --cov=validator --cov-report=term-missing --cov-report=xml:coverage-validator.xml
+
+      - name: Show files
+        run: ls -la
+
+      - name: Upload validator coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-validator-${{ matrix.os }}
+          path: lab3/coverage-validator.xml
 
   test-transformer:
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    
+
     runs-on: ${{ matrix.os }}
 
     defaults:
@@ -57,17 +67,28 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-cov
 
-      - name: Run transformer tests
-        run: pytest test_transformer.py -v
+      - name: Run transformer tests with coverage
+        run: pytest test_transformer.py -v --cov=transformer --cov-report=term-missing --cov-report=xml:coverage-transformer.xml
+
+      - name: Show files
+        run: ls -la
+
+      - name: Upload transformer coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-transformer-${{ matrix.os }}
+          path: lab3/coverage-transformer.xml
 
   test-reporter:
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    
+
     runs-on: ${{ matrix.os }}
 
     defaults:
@@ -84,10 +105,21 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-cov
 
-      - name: Run reporter tests
-        run: pytest test_reporter.py -v
+      - name: Run reporter tests with coverage
+        run: pytest test_reporter.py -v --cov=reporter --cov-report=term-missing --cov-report=xml:coverage-reporter.xml
+
+      - name: Show files
+        run: ls -la
+
+      - name: Upload reporter coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reporter-${{ matrix.os }}
+          path: lab3/coverage-reporter.xml
 
   pipeline-summary:
     runs-on: ubuntu-latest
