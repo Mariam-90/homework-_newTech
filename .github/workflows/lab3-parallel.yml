@@ -18,8 +18,8 @@ jobs:
       matrix:
         test_file:
           - test_validator.py
-          - test-transformer.py
-          - test-reporter.py
+          - test_transformer.py
+          - test_reporter.py
 
     steps:
       - name: Checkout code
