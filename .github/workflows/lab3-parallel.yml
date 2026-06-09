@@ -1,18 +1,25 @@
 name: Lab 3 - Parallel jobs
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    
+
 jobs:
-  test-validator:
+  tests:
     runs-on: ubuntu-latest
 
     defaults:
-        run:
-            working-directory: ./lab3
-    
+      run:
+        working-directory: ./lab3
+
+    strategy:
+      matrix:
+        test_file:
+          - test_validator.py
+          - test-transformer.py
+          - test-reporter.py
 
     steps:
       - name: Checkout code
@@ -22,14 +29,11 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-    
+
       - name: Install dependencies
         run: |
-            pip install -r requirements.txt
-     
-      - name: Run test_validator
-        
-        run: |
-         pwd
-         pytest test_validator.py -v
+          pip install -r requirements.txt
 
+      - name: Run pytest
+        run: |
+          pytest ${{ matrix.test_file }} -v
