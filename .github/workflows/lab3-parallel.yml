@@ -36,8 +36,6 @@ jobs:
       - name: Run validator tests with coverage
         run: pytest test_validator.py -v --cov=validator --cov-report=term-missing --cov-report=xml:coverage-validator.xml
 
-      - name: Show files
-        run: ls -la
 
       - name: Upload validator coverage report
         uses: actions/upload-artifact@v4
@@ -74,9 +72,6 @@ jobs:
       - name: Run transformer tests with coverage
         run: pytest test_transformer.py -v --cov=transformer --cov-report=term-missing --cov-report=xml:coverage-transformer.xml
 
-      - name: Show files
-        run: ls -la
-
       - name: Upload transformer coverage report
         uses: actions/upload-artifact@v4
         with:
@@ -112,14 +107,33 @@ jobs:
       - name: Run reporter tests with coverage
         run: pytest test_reporter.py -v --cov=reporter --cov-report=term-missing --cov-report=xml:coverage-reporter.xml
 
-      - name: Show files
-        run: ls -la
-
       - name: Upload reporter coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reporter-${{ matrix.os }}
           path: lab3/coverage-reporter.xml
+
+  security-scan:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./lab3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run security scan
+        run: bandit -r .
 
   pipeline-summary:
     runs-on: ubuntu-latest
@@ -128,6 +142,7 @@ jobs:
       - test-validator
       - test-transformer
       - test-reporter
+      - security-scan
 
     if: always()
 
@@ -137,3 +152,4 @@ jobs:
           echo "validator: ${{ needs.test-validator.result }}"
           echo "transformer: ${{ needs.test-transformer.result }}"
           echo "reporter: ${{ needs.test-reporter.result }}"
+           echo "security scan: ${{ needs.security-scan.result }}"
