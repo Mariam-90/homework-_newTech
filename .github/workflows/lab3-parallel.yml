@@ -8,6 +8,7 @@ on:
 
 jobs:
   tests:
+    name: Run ${{ matrix.test_name }}
     runs-on: ubuntu-latest
 
     defaults:
@@ -15,25 +16,38 @@ jobs:
         working-directory: ./lab3
 
     strategy:
+      fail-fast: false
       matrix:
-        test_file:
-          - test_validator.py
-          - test_transformer.py
-          - test_reporter.py
+        include:
+          - test_name: validator
+            test_file: test_validator.py
+          - test_name: transformer
+            test_file: test_transformer.py
+          - test_name: reporter
+            test_file: test_reporter.py
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
       - name: Set up Python 3.11
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run pytest
+        run: pytest ${{ matrix.test_file }} -v
+
+  pipeline-summary:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: always()
+
+    steps:
+      - name: Print summary
         run: |
-          pytest ${{ matrix.test_file }} -v
+          echo "All matrix test jobs finished."
+          echo "Tests result: ${{ needs.tests.result }}"
