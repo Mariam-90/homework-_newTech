@@ -24,10 +24,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+            python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
@@ -39,7 +39,7 @@ jobs:
 
 
       - name: Upload validator coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-validator-${{ matrix.os }}-py${{ matrix.python-version }}
           path: lab3/coverage-validator.xml
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
             python-version: ${{ matrix.python-version }}
 
@@ -75,7 +75,7 @@ jobs:
         run: pytest test_transformer.py -v --cov=transformer --cov-report=term-missing --cov-report=xml:coverage-transformer.xml
 
       - name: Upload transformer coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-transformer-${{ matrix.os }}-py${{ matrix.python-version }}
           path: lab3/coverage-transformer.xml
@@ -112,7 +112,7 @@ jobs:
         run: pytest test_reporter.py -v --cov=reporter --cov-report=term-missing --cov-report=xml:coverage-reporter.xml
 
       - name: Upload reporter coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-reporter-${{ matrix.os }}-py${{ matrix.python-version }}
           path: lab3/coverage-reporter.xml
