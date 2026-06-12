@@ -24,7 +24,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-        
+
       - uses: hashicorp/setup-terraform@v4
         with:
-            terraform_version: "1.14.4"
+         terraform_version: "1.14.4"
+
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+          
+      - name: Terraform Format Check
+        run: terraform fmt -check
