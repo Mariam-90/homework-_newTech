@@ -2,6 +2,8 @@ name: Lab 3 - Parallel jobs
 
 on:
   push:
+    paths:
+      - 'lab3'
     branches: [ main ]
   pull_request:
     branches: [ main ]
