@@ -169,6 +169,8 @@ Run each test job on three operating systems in parallel:
     runs-on: ${{ matrix.os }}
 ```
 
+
+
 **Bonus 2 — `fail-fast: false`**
 By default, if one matrix job fails, GitHub cancels the rest. Disable this so you always see results for every OS:
 
