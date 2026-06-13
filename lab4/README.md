@@ -94,6 +94,7 @@ terraform validate
 
 # Preview changes
 terraform plan -var-file=terraform.tfvars
+terraform plan -out=tfplan -var-file="terraform.tfvars"
 
 # Apply (creates the S3 bucket in AWS)
 terraform apply -var-file=terraform.tfvars
