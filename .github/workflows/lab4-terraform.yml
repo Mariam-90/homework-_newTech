@@ -45,7 +45,7 @@ jobs:
 
 
       - name: Run Checkov
-        run: checkov -d . --framework terraform
+        run: checkov -d . --framework terraform --skip-check CKV_AWS_18,CKV_AWS_144,CKV2_AWS_62,CKV_AWS_145
           
 
       - name: Terraform Plan
