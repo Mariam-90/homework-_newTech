@@ -55,3 +55,22 @@ resource "aws_s3_bucket_versioning" "app_storage" {
     status = "Enabled"
   }
 }
+
+# ── Lifecycle Configuration ───────────────────────────────────────────────────
+
+resource "aws_s3_bucket_lifecycle_configuration" "app_storage" {
+  bucket = aws_s3_bucket.app_storage.id
+
+  rule {
+    id     = "cleanup-old-versions"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+  }
+}
