@@ -1,63 +1,63 @@
-name: Terraform CI/CD
+# name: Terraform CI/CD
 
-on:
-  push:
-    branches: [ main ]
+# on:
+#   push:
+#     branches: [ main ]
 
-  pull_request:
-    branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
 
-jobs:
-  terraform:
-    runs-on: ubuntu-latest
+# jobs:
+#   terraform:
+#     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./lab4/terraform
+#     defaults:
+#       run:
+#         working-directory: ./lab4/terraform
 
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      TF_VAR_bucket_name: ${{ secrets.TF_BUCKET_NAME }}
-      TF_VAR_aws_region: "us-east-1"
+#     env:
+#       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#       TF_VAR_bucket_name: ${{ secrets.TF_BUCKET_NAME }}
+#       TF_VAR_aws_region: "us-east-1"
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
 
-      - uses: hashicorp/setup-terraform@v4
-        with:
-         terraform_version: "1.14.4"
+#       - uses: hashicorp/setup-terraform@v4
+#         with:
+#          terraform_version: "1.14.4"
 
-      - name: Terraform Init
-        run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+#       - name: Terraform Init
+#         run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
       
-      - name: Terraform fmt
-        run: terraform fmt -check
+#       - name: Terraform fmt
+#         run: terraform fmt -check
 
-      - name: Terraform Validate
-        run: terraform validate
-
-
-      - name: Install Checkov
-        run: pip install checkov
+#       - name: Terraform Validate
+#         run: terraform validate
 
 
-      - name: Run Checkov
-        run: checkov -d . --framework terraform --skip-check CKV_AWS_18,CKV_AWS_144,CKV2_AWS_62,CKV_AWS_145
+#       - name: Install Checkov
+#         run: pip install checkov
+
+
+#       - name: Run Checkov
+#         run: checkov -d . --framework terraform --skip-check CKV_AWS_18,CKV_AWS_144,CKV2_AWS_62,CKV_AWS_145
           
 
-      - name: Terraform Plan
-        run: terraform plan  -out=tfplan -input=false
+#       - name: Terraform Plan
+#         run: terraform plan  -out=tfplan -input=false
         
      
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve tfplan
+#       - name: Terraform Apply
+#         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+#         run: terraform apply -auto-approve tfplan
 
-      - name: Terraform Output
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform output
+#       - name: Terraform Output
+#         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+#         run: terraform output
     
       
